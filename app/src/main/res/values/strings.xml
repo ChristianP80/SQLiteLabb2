@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Labb2SQLite</string>
+    <string-array name="categories">
+        <item>fritid</item>
+        <item>arbete</item>
+        <item>viktigt</item>
+    </string-array>
+</resources>
