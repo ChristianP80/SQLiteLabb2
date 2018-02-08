@@ -23,7 +23,7 @@ public class TodoActivity extends AppCompatActivity {
     private DbHelper dbHelper;
     private User currentUser = new User();
     private ListView todoListView;
-    private EditText titelEditText;
+    private EditText titleEditText;
     private EditText contentEditText;
     private Button addButton;
     private List<Todo> todoList;
@@ -77,7 +77,7 @@ public class TodoActivity extends AppCompatActivity {
 
 
 
-                String title = titelEditText.getText().toString();
+                String title = titleEditText.getText().toString();
                 String content = contentEditText.getText().toString();
                 String categories = categorySpinner.getSelectedItem().toString();
                 int category;
@@ -92,10 +92,10 @@ public class TodoActivity extends AppCompatActivity {
                 }
                 int userID = currentUser.getUserId();
                 dbHelper.createTodo(title, content, category, userID);
-                titleList.add(titelEditText.toString());
+                titleList.add(titleEditText.toString());
                 Todo todo = new Todo(title, content, category, userID);
                 todoList.add(todo);
-                titelEditText.setVisibility(View.INVISIBLE);
+                titleEditText.setVisibility(View.INVISIBLE);
                 contentEditText.setVisibility(View.INVISIBLE);
                 addButton.setVisibility(View.INVISIBLE);
                 categorySpinner.setVisibility(View.INVISIBLE);
@@ -109,12 +109,12 @@ public class TodoActivity extends AppCompatActivity {
 
     private void importElements() {
         todoListView = findViewById(R.id.todoListView);
-        titelEditText = findViewById(R.id.TitleEditText);
+        titleEditText = findViewById(R.id.TitleEditText);
         contentEditText = findViewById(R.id.descriptionEditText);
         addButton = findViewById(R.id.addButton);
         categorySpinner = findViewById(R.id.categorySpinner);
 
-        titelEditText.setVisibility(View.INVISIBLE);
+        titleEditText.setVisibility(View.INVISIBLE);
         contentEditText.setVisibility(View.INVISIBLE);
         addButton.setVisibility(View.INVISIBLE);
         categorySpinner.setVisibility(View.INVISIBLE);
@@ -131,7 +131,7 @@ public class TodoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addTodoButton:
-                titelEditText.setVisibility(View.VISIBLE);
+                titleEditText.setVisibility(View.VISIBLE);
                 contentEditText.setVisibility(View.VISIBLE);
                 addButton.setVisibility(View.VISIBLE);
                 categorySpinner.setVisibility(View.VISIBLE);
