@@ -74,9 +74,6 @@ public class TodoActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
                 String title = titleEditText.getText().toString();
                 String content = contentEditText.getText().toString();
                 String categories = categorySpinner.getSelectedItem().toString();
@@ -92,7 +89,7 @@ public class TodoActivity extends AppCompatActivity {
                 }
                 int userID = currentUser.getUserId();
                 dbHelper.createTodo(title, content, category, userID);
-                titleList.add(titleEditText.toString());
+                titleList.add(titleEditText.getText().toString());
                 Todo todo = new Todo(title, content, category, userID);
                 todoList.add(todo);
                 titleEditText.setVisibility(View.INVISIBLE);
