@@ -73,14 +73,14 @@ public class TodoActivity extends AppCompatActivity {
         todoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
+                Intent detailsIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
                 String title = todoList.get(position).getTodoTitle();
                 String description = todoList.get(position).getTodoContent();
                 int todoId = todoList.get(position).getTodoId();
-                myIntent.putExtra("todoId", todoId);
-                myIntent.putExtra("todoTitle", title);
-                myIntent.putExtra("todoDescription", description);
-                startActivityForResult(myIntent, 0);
+                detailsIntent.putExtra("todoId", todoId);
+                detailsIntent.putExtra("todoTitle", title);
+                detailsIntent.putExtra("todoDescription", description);
+                startActivity(detailsIntent);
             }
         });
 
@@ -151,6 +151,7 @@ public class TodoActivity extends AppCompatActivity {
                 return true;
             case R.id.statistics:
                 Intent statsIntent = new Intent(this, StatsActivity.class);
+                statsIntent.putExtra("userID", currentUser.getUserId());
                 startActivity(statsIntent);
                 return true;
             case R.id.signOut:
