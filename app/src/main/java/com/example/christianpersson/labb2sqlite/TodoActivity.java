@@ -1,8 +1,10 @@
 package com.example.christianpersson.labb2sqlite;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,7 +32,9 @@ public class TodoActivity extends AppCompatActivity {
     private List<String> titleList;
     private Spinner categorySpinner;
     private ArrayAdapter<String> adapter;
+    private SharedPreferences sharedPreferences;
 
+    public static final String LOGGED_IN = "LOGGEDIN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,8 @@ public class TodoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo);
         importElements();
         dbHelper = new DbHelper(this);
+        sharedPreferences = getSharedPreferences(LOGGED_IN, 0);
+
 
         Intent myIntent = getIntent();
         Bundle b = myIntent.getExtras();
@@ -48,7 +54,12 @@ public class TodoActivity extends AppCompatActivity {
         Toast.makeText(this, "Signed in with userId: " + currentUser.getUserId(), Toast.LENGTH_SHORT).show();
 
 
+
         todoList = dbHelper.getAllTodos(currentUser.getUserId());
+        for (int i = 0; i <todoList.size() ; i++) {
+            Log.d("chrille", String.valueOf(todoList.get(i).getTodoId()));
+        }
+
         titleList = new ArrayList<>();
         for (int i = 0; i < todoList.size(); i++) {
             titleList.add(todoList.get(i).getTodoTitle());
@@ -65,9 +76,11 @@ public class TodoActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
                 String title = todoList.get(position).getTodoTitle();
                 String description = todoList.get(position).getTodoContent();
+                int todoId = todoList.get(position).getTodoId();
+                myIntent.putExtra("todoId", todoId);
                 myIntent.putExtra("todoTitle", title);
                 myIntent.putExtra("todoDescription", description);
-                startActivity(myIntent);
+                startActivityForResult(myIntent, 0);
             }
         });
 
@@ -99,6 +112,8 @@ public class TodoActivity extends AppCompatActivity {
 
                 todoListView.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
+                titleEditText.setText("");
+                contentEditText.setText("");
 
             }
         });
@@ -135,6 +150,18 @@ public class TodoActivity extends AppCompatActivity {
                 todoListView.setVisibility(View.INVISIBLE);
                 return true;
             case R.id.statistics:
+                Intent statsIntent = new Intent(this, StatsActivity.class);
+                startActivity(statsIntent);
+                return true;
+            case R.id.signOut:
+                Intent intent = new Intent(this, MainActivity.class);
+                sharedPreferences = getSharedPreferences(MainActivity.LOGGED_IN, 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt(MainActivity.IS_LOGGED_IN, 0);
+                editor.apply();
+                startActivity(intent);
+                finish();
+
             default:
                 return super.onOptionsItemSelected(item);
         }

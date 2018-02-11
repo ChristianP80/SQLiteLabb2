@@ -127,7 +127,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return check;
     }
 
-    private List<User> getAllUsers() {
+    public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.query(DbHelper.TABLE_USERS, null, null, null, null, null, null);
@@ -206,6 +206,15 @@ public class DbHelper extends SQLiteOpenHelper {
         return check;
     }
 
+    public void updateTodo(int todoId, String todoTitle, String todoContent) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_TODO_TITLE, todoTitle);
+        cv.put(COLUMN_TODO_CONTENT, todoContent);
+        db.update(TABLE_TODO, cv, "todoID=" + todoId, null);
+        db.close();
+    }
+
     public List<Todo> getAllTodos(int userId) {
         List<Todo> userTodos = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -243,6 +252,24 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         db.close();
         return null;
+    }
+
+    public User getSpecificUser(String username) {
+        SQLiteDatabase database = getReadableDatabase();
+        String selection = "user=?";
+        String[] selectionArgs = new String[] {String.valueOf(username)};
+        Cursor c = database.query(TABLE_USERS, null, selection, selectionArgs,
+                null, null, null);
+        boolean success = c.moveToFirst();
+        User user = null;
+        if (success){
+            user = new User();
+            user.setUserId(c.getInt(0));
+            user.setUserName(c.getString(1));
+            user.setUserPassword(c.getString(2));
+        }
+        c.close();
+        return user;
     }
 }
 
