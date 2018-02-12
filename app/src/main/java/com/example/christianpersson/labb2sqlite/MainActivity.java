@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String IS_LOGGED_IN = "ISLOGGEDIN";
     public static final int SIGNED_IN = 1;
     private int checkIfLoggedIn;
+    private User user;
+    private int userId;
 
 
 
@@ -39,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
         sharedPreferences = getSharedPreferences(LOGGED_IN, 0);
-        checkIfLoggedIn();
+        if (!userNameEditText.getText().toString().isEmpty()) {
+            checkIfLoggedIn();
+        }
     }
 
 
@@ -51,24 +55,25 @@ public class MainActivity extends AppCompatActivity {
 
         List<User> users = dbHelper.getAllUsers();
         for (int i = 0; i <users.size() ; i++) {
-            Log.d("chrille", String.valueOf(users.get(i).getUserId()));
+            Log.d("chrille", "User" + String.valueOf(users.get(i).getUserId()));
         }
 
 
         if (signInUserName.isEmpty() || signInPassword.isEmpty()) {
             Toast.makeText(this, "Please fill in required fields", Toast.LENGTH_SHORT).show();
         } else {
-            User user = dbHelper.getSpecificUser(signInUserName);
+            user = dbHelper.getSpecificUser(signInUserName);
             if (user == null) {
                 Toast.makeText(this, "User doesn´t exist", Toast.LENGTH_SHORT).show();
             } else {
                 if (signInPassword.equals(user.getUserPassword())) {
                     Intent intent = new Intent(this, TodoActivity.class);
-                    int userId = user.getUserId();
+                    userId = user.getUserId();
                     intent.putExtra("userId", userId);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(SIGN_IN_USER_NAME, signInUserName);
                     editor.putString(SIGN_IN_PASSWORD, signInPassword);
+                    editor.putInt("USERID", userId);
                     checkIfLoggedIn = 1;
                     editor.putInt(IS_LOGGED_IN, checkIfLoggedIn);
                     editor.apply();
@@ -107,9 +112,13 @@ public class MainActivity extends AppCompatActivity {
     }
 */
     public void checkIfLoggedIn() {
+        String signInUserName = userNameEditText.getText().toString();
+        user = dbHelper.getSpecificUser(signInUserName);
         checkIfLoggedIn = sharedPreferences.getInt(IS_LOGGED_IN, 0);
         if (SIGNED_IN == checkIfLoggedIn) {
             Intent intent = new Intent(this, TodoActivity.class);
+            userId = user.getUserId();
+            intent.putExtra("userId", userId);
             startActivity(intent);
         }
     }

@@ -23,7 +23,7 @@ import java.util.List;
 public class TodoActivity extends AppCompatActivity {
 
     private DbHelper dbHelper;
-    private User currentUser = new User();
+    private User currentUser;
     private ListView todoListView;
     private EditText titleEditText;
     private EditText contentEditText;
@@ -33,56 +33,33 @@ public class TodoActivity extends AppCompatActivity {
     private Spinner categorySpinner;
     private ArrayAdapter<String> adapter;
     private SharedPreferences sharedPreferences;
-
-    public static final String LOGGED_IN = "LOGGEDIN";
+    private int userID;
+    public static final String LIST_LOADED = "LISTLOADED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+        currentUser = new User();
+        getIntentExtras();
+ //       sharedPreferences = getSharedPreferences(LIST_LOADED, 0);
+ //       setPrefs();
         importElements();
         dbHelper = new DbHelper(this);
-        sharedPreferences = getSharedPreferences(LOGGED_IN, 0);
-
-
-        Intent myIntent = getIntent();
-        Bundle b = myIntent.getExtras();
-        if (b != null){
-            int userID = b.getInt("userId");
-            currentUser.setUserId(userID);
-        }
-        Toast.makeText(this, "Signed in with userId: " + currentUser.getUserId(), Toast.LENGTH_SHORT).show();
-
-
-
-        todoList = dbHelper.getAllTodos(currentUser.getUserId());
-        for (int i = 0; i <todoList.size() ; i++) {
-            Log.d("chrille", String.valueOf(todoList.get(i).getTodoId()));
-        }
-
-        titleList = new ArrayList<>();
-        for (int i = 0; i < todoList.size(); i++) {
-            titleList.add(todoList.get(i).getTodoTitle());
+        setTitleandTodoList();
+        setAdapter();
+        for (int i = 0; i <titleList.size() ; i++) {
+            Log.d("chrille ", titleList.get(i));
         }
 
 
-        adapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_list_item_1, titleList);
 
-        todoListView.setAdapter(adapter);
-        todoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent detailsIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
-                String title = todoList.get(position).getTodoTitle();
-                String description = todoList.get(position).getTodoContent();
-                int todoId = todoList.get(position).getTodoId();
-                detailsIntent.putExtra("todoId", todoId);
-                detailsIntent.putExtra("todoTitle", title);
-                detailsIntent.putExtra("todoDescription", description);
-                startActivity(detailsIntent);
-            }
-        });
+
+
+
+
+
+
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +94,55 @@ public class TodoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+//    private void setPrefs() {
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("USERID", userID);
+//        editor.apply();
+//    }
+
+    private void setAdapter() {
+        adapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, titleList);
+
+        todoListView.setAdapter(adapter);
+        todoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent detailsIntent = new Intent(getApplicationContext(), TodoDetailsActivity.class);
+                String title = todoList.get(position).getTodoTitle();
+                String description = todoList.get(position).getTodoContent();
+                int todoId = todoList.get(position).getTodoId();
+                detailsIntent.putExtra("todoId", todoId);
+                detailsIntent.putExtra("todoTitle", title);
+                detailsIntent.putExtra("todoDescription", description);
+                startActivity(detailsIntent);
+            }
+        });
+    }
+
+    private void setTitleandTodoList() {
+        todoList = dbHelper.getAllTodos(currentUser.getUserId());
+//        for (int i = 0; i <todoList.size() ; i++) {
+//            Log.d("chrille", String.valueOf(todoList.get(i).getTodoId()));
+//        }
+
+        titleList = new ArrayList<>();
+        for (int i = 0; i < todoList.size(); i++) {
+            titleList.add(todoList.get(i).getTodoTitle());
+        }
+    }
+
+    private void getIntentExtras() {
+
+        Intent myIntent = getIntent();
+        Bundle b = myIntent.getExtras();
+        if (b != null){
+            userID = b.getInt("userId");
+            currentUser.setUserId(userID);
+        }
+        Toast.makeText(this, "Signed in with userId: " + currentUser.getUserId(), Toast.LENGTH_SHORT).show();
     }
 
     private void importElements() {
