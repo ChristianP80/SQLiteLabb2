@@ -44,8 +44,8 @@ public class StatsActivity extends AppCompatActivity {
         List<Todo> todos;
         Log.d("chrille", "UserId: " + userId + "Category: " + category);
         todos = dbHelper.getAllTodosInCategory(userId, category);
-//        int numberOfTodos = todos.size();
-//        countTextView.setText(numberOfTodos);
+        String numberOfTodos = String.valueOf(todos.size());
+        countTextView.setText(numberOfTodos);
     }
     private void setSpinnerAdapter() {
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
