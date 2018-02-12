@@ -66,8 +66,9 @@ public class TodoDetailsActivity extends AppCompatActivity {
 
     private void deleteTodo() {
         dbHelper.deleteTodo(todoId);
-        Intent intent = new Intent(this, TodoActivity.class);
-        startActivityForResult(intent, RESULT_OK);
+        //Intent intent = new Intent(this, TodoActivity.class);
+        //startActivityForResult(intent, RESULT_OK);
+        finish();
     }
 
     public void onUpdateClicked(View view) {

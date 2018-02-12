@@ -50,6 +50,7 @@ public class TodoActivity extends AppCompatActivity {
         setAdapter();
         for (int i = 0; i <titleList.size() ; i++) {
             Log.d("chrille ", titleList.get(i));
+            Log.d("chrille ", "categoryID" + String.valueOf(todoList.get(i).getTodoCategoryId()));
         }
 
 
@@ -69,11 +70,11 @@ public class TodoActivity extends AppCompatActivity {
                 String categories = categorySpinner.getSelectedItem().toString();
                 int category;
                 if (categories.equals("arbete")) {
-                    category = 0;
-                } else if (categories.equals("fritid")) {
                     category = 1;
-                } else if (categories.equals("viktigt")) {
+                } else if (categories.equals("fritid")) {
                     category = 2;
+                } else if (categories.equals("viktigt")) {
+                    category = 3;
                 } else {
                     category = 0;
                 }

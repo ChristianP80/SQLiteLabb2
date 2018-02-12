@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public void insertDummyIntoCategory(SQLiteDatabase db) {
 
-        db.execSQL("INSERT INTO " + TABLE_CATEGORY + "(categoryName) VALUES ('Arbete'), ('Fritid'), ('Viktigt')");
+        db.execSQL("INSERT INTO " + TABLE_CATEGORY + " (" + COLUMN_CATEGORY_NAME + ") VALUES ('Arbete'), ('Fritid'), ('Viktigt')");
 
     }
 
@@ -188,7 +189,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
         cv.put(COLUMN_TODO_TITLE, todoTitle);
         cv.put(COLUMN_TODO_CONTENT, todoContent);
-        cv.put(COLUMN_TODO_CATEGORY_ID, todoCategoryID);
+        cv.put(COLUMN_TODO_CATEGORY_ID, (todoCategoryID));
+        Log.d("chrille", "kategoriID= " + String.valueOf(todoCategoryID));
         cv.put(COLUMN_TODO_USER_ID, todoUserId);
 
         long success = db.insert(TABLE_TODO, null, cv);
@@ -213,6 +215,49 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_TODO_CONTENT, todoContent);
         db.update(TABLE_TODO, cv, "todoID=" + todoId, null);
         db.close();
+    }
+
+    public List<Todo> getAllTodosInCategory(int userId, String category) {
+        List<Todo> userTodos = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+//        String query = "SELECT * FROM Todo " +
+//                "JOIN Category ON Todo.todoCategoryID = Category.categoryID " +
+//                "JOIN Users ON Todo.todoUserID = Users.userID " +
+//                "WHERE Category.categoryName = ?"; /* + " AND " + " Users.userID = ?" + ";";
+//                //+ "Fritid" + " AND " + " Users.userID = ?" + userId;*/
+//
+// //       Cursor c = db.rawQuery(query, new String[] {String.valueOf(userId), category});
+//        Cursor c = db.rawQuery(query, new String[] {category});
+
+                String query = "SELECT * FROM Todo " +
+                "JOIN Category ON Todo.todoCategoryID = Category.categoryID " +
+                "JOIN Users ON Todo.todoUserID = Users.userID " +
+                "WHERE Category.categoryName = ?"; /* + " AND " + " Users.userID = ?" + ";";
+                //+ "Fritid" + " AND " + " Users.userID = ?" + userId;*/
+
+               Cursor c = db.rawQuery(query, new String[] {/*String.valueOf(userId), */category});
+
+
+        boolean success = c.moveToFirst();
+        Log.d("chrille", "boolean " +String.valueOf(success));
+        if (success) {
+            do {
+                Todo todo = new Todo();
+                todo.setTodoId(c.getInt(c.getColumnIndex(DbHelper.COLUMN_TODO_ID)));
+                todo.setTodoTitle(c.getString(c.getColumnIndex(DbHelper.COLUMN_TODO_TITLE)));
+                todo.setTodoContent(c.getString(c.getColumnIndex(DbHelper.COLUMN_TODO_CONTENT)));
+                todo.setTodoCategoryId(c.getInt(c.getColumnIndex(DbHelper.COLUMN_TODO_CATEGORY_ID)));
+                todo.setTodoUserId(c.getInt(c.getColumnIndex(DbHelper.COLUMN_TODO_USER_ID)));
+                if (c.getInt(c.getColumnIndex(DbHelper.COLUMN_TODO_USER_ID)) == userId) {
+                    userTodos.add(todo);
+                }
+            } while (c.moveToNext());
+        }
+        db.close();
+        Log.d("chrille", "Antal todos: " + String.valueOf(userTodos.size()));
+
+    return userTodos;
     }
 
     public List<Todo> getAllTodos(int userId) {
