@@ -221,22 +221,12 @@ public class DbHelper extends SQLiteOpenHelper {
         List<Todo> userTodos = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-//        String query = "SELECT * FROM Todo " +
-//                "JOIN Category ON Todo.todoCategoryID = Category.categoryID " +
-//                "JOIN Users ON Todo.todoUserID = Users.userID " +
-//                "WHERE Category.categoryName = ?"; /* + " AND " + " Users.userID = ?" + ";";
-//                //+ "Fritid" + " AND " + " Users.userID = ?" + userId;*/
-//
-// //       Cursor c = db.rawQuery(query, new String[] {String.valueOf(userId), category});
-//        Cursor c = db.rawQuery(query, new String[] {category});
-
                 String query = "SELECT * FROM Todo " +
                 "JOIN Category ON Todo.todoCategoryID = Category.categoryID " +
                 "JOIN Users ON Todo.todoUserID = Users.userID " +
-                "WHERE Category.categoryName = ?"; /* + " AND " + " Users.userID = ?" + ";";
-                //+ "Fritid" + " AND " + " Users.userID = ?" + userId;*/
+                "WHERE Category.categoryName = ?";
 
-               Cursor c = db.rawQuery(query, new String[] {/*String.valueOf(userId), */category});
+               Cursor c = db.rawQuery(query, new String[] {category});
 
 
         boolean success = c.moveToFirst();
