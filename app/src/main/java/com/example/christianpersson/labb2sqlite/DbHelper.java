@@ -223,7 +223,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 String query = "SELECT * FROM Todo " +
                 "JOIN Category ON Todo.todoCategoryID = Category.categoryID " +
-                "JOIN Users ON Todo.todoUserID = Users.userID " +
                 "WHERE Category.categoryName = ?";
 
                Cursor c = db.rawQuery(query, new String[] {category});
